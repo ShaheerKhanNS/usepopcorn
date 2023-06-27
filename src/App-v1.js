@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const tempMovieData = [
   {
@@ -50,37 +50,9 @@ const tempWatchedData = [
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
-const KEY = "4b8c2872";
-
 export default function App() {
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
-  const [loading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const query = `interssssssssstessssssssllarssssssssssss`;
-
-  useEffect(function () {
-    async function fetchMovies() {
-      try {
-        setIsLoading(true);
-        const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
-        );
-
-        if (!res.ok) throw new Error("Something went in fetching data😔");
-
-        const data = await res.json();
-        if (data.Response === "False") throw new Error("Movie not found🎥⚠️");
-        setMovies(data.Search);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchMovies();
-  }, []);
 
   return (
     <>
@@ -91,10 +63,7 @@ export default function App() {
       </NavBar>
       <Main>
         <Box movies={movies}>
-          {/* {loading ? <Loader /> : <MovieList movies={movies}></MovieList>} */}
-          {loading && <Loader />}
-          {!loading && !error && <MovieList movies={movies}></MovieList>}
-          {error && <ErrorMessage message={error} />}
+          <MovieList movies={movies}></MovieList>
         </Box>
         <Box>
           <WatchedSummary watched={watched} />
@@ -131,19 +100,6 @@ function NumResults({ movies }) {
   return (
     <p className="num-results">
       Found <strong>{movies.length}</strong> results
-    </p>
-  );
-}
-
-function Loader() {
-  return <p className="loader">Loading...</p>;
-}
-
-function ErrorMessage({ message }) {
-  return (
-    <p className="error">
-      <span>⛔</span>
-      {message}
     </p>
   );
 }
