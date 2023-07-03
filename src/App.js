@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating";
 import { useMovies } from "./useMovies";
+import { useLocalStorageState } from "./useLocalStorageState";
 
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -13,11 +14,8 @@ export default function App() {
 
   const { movies, loading, error } = useMovies(query, handleCloseMovie);
 
-  const [watched, setWatched] = useState(function () {
-    const setValues = localStorage.getItem("watched");
+  const [watched, setWatched] = useLocalStorageState([], "watched");
 
-    return JSON.parse(setValues);
-  });
   // const tempQuery = `interstellar`;
 
   function handleSelectMovie(id) {
@@ -37,13 +35,6 @@ export default function App() {
   function handleDeleteWatched(id) {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   }
-
-  useEffect(
-    function () {
-      localStorage.setItem(`watched`, JSON.stringify(watched));
-    },
-    [watched]
-  );
 
   return (
     <>
